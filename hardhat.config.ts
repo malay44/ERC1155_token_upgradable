@@ -7,11 +7,16 @@ require('dotenv').config({ path: path.resolve(__dirname, './.env')});
 
 const config: HardhatUserConfig = {
   solidity: "0.8.17",
-  defaultNetwork: "mumbai",
+  defaultNetwork: "polygon",
   networks: {
     mumbai: {
       url: "https://rpc.ankr.com/polygon_mumbai",
       chainId: 80001,
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+    },
+    polygon: {
+      url: "https://polygon-rpc.com/",
+      chainId: 137,
       accounts: [`0x${process.env.PRIVATE_KEY}`],
     },
   },

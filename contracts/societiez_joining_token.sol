@@ -32,7 +32,7 @@ contract societiez_joining_token is
 
     function initialize() initializer public  {
         __ERC1155_init(
-            "https://malay44.github.io/erc1155_token/tokens_metadata/{id}.json"
+            "https://societiez.github.io/erc1155_token/tokens_metadata/{id}.json"
         );
         __Ownable_init();
         __ERC1155Supply_init();
