@@ -17,9 +17,9 @@ contract societiez_joining_token is
     address payable public cfoAddress;
     address public cooAddress;
     bool public isSale;
-    uint256 public PLATINIUM_qty;
-    uint256 public GOLD_qty;
-    uint256 public SILVER_qty;
+    uint256 public Elite_qty;
+    uint256 public Prime_qty;
+    uint256 public Noble_qty;
     uint256[] public price;
     address public trustedForwarder;
 
@@ -39,9 +39,9 @@ contract societiez_joining_token is
         __Context_init();
         ceoAddress = msg.sender;
         isSale = false;
-        PLATINIUM_qty = 100;
-        GOLD_qty = 900;
-        SILVER_qty = 1000;
+        Elite_qty = 500;
+        Prime_qty = 4500;
+        Noble_qty = 95000;
         price = [60000000000000, 30000000000000, 10000000000000];
     }
 
@@ -109,16 +109,16 @@ contract societiez_joining_token is
         isSale = _status;
     }
 
-    function setPLATINIUM_qty(uint256 quantity) external onlyCLevel {
-        PLATINIUM_qty = quantity;
+    function setElite_qty(uint256 quantity) external onlyCLevel {
+        Elite_qty = quantity;
     }
 
-    function setGOLD_qty(uint256 quantity) external onlyCLevel {
-        GOLD_qty = quantity;
+    function setPrime_qty(uint256 quantity) external onlyCLevel {
+        Prime_qty = quantity;
     }
 
-    function setSILVER_qty(uint256 quantity) external onlyCLevel {
-        SILVER_qty = quantity;
+    function setNoble_qty(uint256 quantity) external onlyCLevel {
+        Noble_qty = quantity;
     }
 
     function setURI(string memory newuri) public onlyCLevel {
@@ -152,15 +152,22 @@ contract societiez_joining_token is
                 balanceOf(user, 2) == 0,
             "you have already joined the waitlist"
         );
-        if (totalSupply(0) < PLATINIUM_qty) {
+        if (totalSupply(0) < Elite_qty) {
             _mint(user, 0, 1, "");
-        } else if (totalSupply(1) < GOLD_qty) {
+        } else if (totalSupply(1) < Prime_qty) {
             _mint(user, 1, 1, "");
-        } else if (totalSupply(2) < SILVER_qty) {
+        } else if (totalSupply(2) < Noble_qty) {
             _mint(user, 2, 1, "");
         } else {
             require(false, "Waitlist tokens minted out");
         }
+    }
+
+    function buyNFT(uint256 id, uint256 qty, bytes memory data) public payable forSale {
+        require(qty == 1, "you can only buy one token at a time");
+        require(id == 0 || id == 1 || id == 2, "invalid token id");
+        require(msg.value == price[id], "invalid price");
+        _mint(msg.sender, id, qty, data);
     }
 
     function mintBatch(
@@ -170,20 +177,6 @@ contract societiez_joining_token is
         bytes memory data
     ) public onlyCLevel {
         _mintBatch(to, ids, amounts, data);
-    }
-
-    function reserveTokens() public onlyCLevel virtual {
-        uint256[] memory ids;
-        ids[0] = 0;
-        ids[1] = 1;
-        ids[2] = 2;
-
-        uint256[] memory amounts;
-        amounts[0] = 20;
-        amounts[1] = 10;
-        amounts[2] = 5;
-
-        _mintBatch(ceoAddress, ids, amounts, "");
     }
 
     function withdrawBalance(uint256 amount) external payable onlyCFO virtual {
